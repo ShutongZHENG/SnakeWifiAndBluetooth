@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    sw = new SocketWifi("82.165.59.229", 2333, game);
+                    sw = new SocketWifi("10.0.0.10", 2333, game);
                     sw.startReceivingInformation(sw);
                     while (true) {
                         sw.sendInformation();

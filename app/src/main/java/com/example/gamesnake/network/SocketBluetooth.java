@@ -28,7 +28,6 @@ public class SocketBluetooth {
     private OutputStream dataOutputStream;
     private int snakeID;
     private int otherSnakeID;
-    //private static final String serverMac = "DC:A6:32:BF:95:66";
     private static final String serverMac = "DC:A6:32:AC:27:CB";
     private static final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private BluetoothDevice bluetoothDevice;
@@ -38,7 +37,8 @@ public class SocketBluetooth {
     private Context context;
     private Game game;
 
-    public SocketBluetooth( Game game) {
+    //constructeur de classe
+    public SocketBluetooth(Game game) {
         this.context = game.getContextGame();
         this.game = game;
         bluetoothDevice = bluetoothAdapter.getRemoteDevice(serverMac);
@@ -53,47 +53,48 @@ public class SocketBluetooth {
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
 
-                return ;
+                return;
             }
             try {
                 bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(uuid1);
                 bluetoothSocket.connect();
                 System.out.println(uuid1);
-            }catch (Exception e ){
+            } catch (Exception e) {
                 bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(uuid2);
                 bluetoothSocket.connect();
                 System.out.println(uuid2);
             }
 
-            dataInputStream =  bluetoothSocket.getInputStream();
+            dataInputStream = bluetoothSocket.getInputStream();
             dataOutputStream = bluetoothSocket.getOutputStream();
 
-            byte[] buffer=new byte[1024];
+            byte[] buffer = new byte[1024];
             bluetoothSocket.getInputStream().read(buffer);
             snakeID = Integer.parseInt(byteToStr(buffer));
-            System.out.println("As snake $"+snakeID+" connected the gameServer");
+            System.out.println("As snake $" + snakeID + " connected the gameServer");
         } catch (IOException e) {
             System.out.println("Error: SocketBluetooth constructor");
         }
     }
 
 
-    public void update(Competitor competitor)  {
-       sendInformation();
+    public void update(Competitor competitor) {
+        sendInformation();
 
-       competitor.update(receiveInformation());
+        competitor.update(receiveInformation());
 
     }
 
-    public void sendInformation()  {
+    // envoyer des données au serveur
+    public void sendInformation() {
         String jsonData = null;
         try {
             ObjectMapper mapper = new ObjectMapper();
             DataTransmission dtm = new DataTransmission();
             dtm.collectPositions(game.snake, game.seed);
-            jsonData =  mapper.writeValueAsString(dtm.pcs);
+            jsonData = mapper.writeValueAsString(dtm.pcs);
 
-        }catch (JsonProcessingException e){
+        } catch (JsonProcessingException e) {
             System.out.println("Error: gameData can't be converted to json");
         }
 
@@ -102,7 +103,7 @@ public class SocketBluetooth {
             dataOutputStream.write(jsonData.getBytes());
             dataOutputStream.flush();
 
-        }catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Error: can't send information");
         }
 
@@ -110,27 +111,28 @@ public class SocketBluetooth {
     }
 
 
-
+    //Recevoir des données du serveur
     public String receiveInformation() {
         String res = null;
         try {
             byte[] buffer = new byte[1024];
-            dataInputStream.read(buffer) ;
-            res =byteToStr(buffer);
+            dataInputStream.read(buffer);
+            res = byteToStr(buffer);
             game.competitor.update(res);
-            System.out.println("Other Snake: "+ res);
+            System.out.println("Other Snake: " + res);
 
-        }catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Error : can't receive information");
         }
         return res;
     }
 
-    public void startReceivingInformation(SocketBluetooth socketBluetooth){
+    //Créer un thread pour que le client reçoive des données
+    public void startReceivingInformation(SocketBluetooth socketBluetooth) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true){
+                while (true) {
                     socketBluetooth.receiveInformation();
                 }
             }
@@ -138,7 +140,7 @@ public class SocketBluetooth {
         thread.start();
     }
 
-
+    //Convertir la chaîne de type "byte" en classe "String"
     public String byteToStr(byte[] buffer) {
         try {
             int length = 0;

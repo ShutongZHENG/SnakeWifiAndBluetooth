@@ -29,7 +29,7 @@ public class SocketWifi {
     private  int otherSnakeID;
 
     private Game game;
-
+ //constructeur de classe
     public SocketWifi(String ipServer , int portServer, Game game){
         this.ipServer = ipServer;
         this.portServer =portServer;
@@ -54,7 +54,7 @@ public class SocketWifi {
         competitor.update(receiveInformation());
 
     }
-
+    // envoyer des données au serveur
     public void sendInformation()  {
         String jsonData = null;
         try {
@@ -79,7 +79,7 @@ public class SocketWifi {
     }
 
 
-
+    //Recevoir des données du serveur
     public String receiveInformation() {
         String res =null;
         try {
@@ -93,6 +93,8 @@ public class SocketWifi {
         return res;
     }
 
+
+    //Créer un thread pour que le client reçoive des données
     public void startReceivingInformation(SocketWifi socketWifi){
         Thread thread = new Thread(new Runnable() {
             @Override
