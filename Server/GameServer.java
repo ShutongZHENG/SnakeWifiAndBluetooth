@@ -17,17 +17,14 @@ public class GameServer {
 //
 //    //测试
 //     private int[] value;
-//     private int turensMade;
-//     private int maxTurns;
 //
 //
 //    //
 
+
+    // Initialiser le serveur wifi
     public GameServer() {
 //        //测试
-//        turensMade = 0;
-//        maxTurns = 4;
-//        value = new int[4];
 //        for (int i =0 ;i <4; i++){
 //            value[i] = (int) (Math.random()*100);
 //            System.out.println("Value #"+i+" "+value[i]);
@@ -46,6 +43,8 @@ public class GameServer {
         }
     }
 
+
+    //Écoutez les connexions sur le port 2333, S'il y a une connexion, créez un thread pour envoyer et recevoir des données
     public void ListenConnections() {
         try {
             System.out.println("search connections-------");
@@ -54,9 +53,9 @@ public class GameServer {
                 nbSnake += 1;
                 System.out.println("Snake $" + nbSnake + " connect the server");
                 ServersThread serversThread = new ServersThread(client, nbSnake);
-                if (nbSnake == 1){
+                if (nbSnake == 1) {
                     snake1thread = serversThread;
-                }else {
+                } else {
                     snake2thread = serversThread;
                 }
 //                Thread thread = new Thread(serversThread);
@@ -73,6 +72,8 @@ public class GameServer {
 
     }
 
+
+    //Le thread du serveur est utilisé pour envoyer et recevoir des données
     private class ServersThread implements Runnable {
         private Socket socket;
         private DataOutputStream dataOutputStream;
@@ -95,62 +96,46 @@ public class GameServer {
         public void run() {
             try {
                 dataOutputStream.writeInt(snakeID);
-//                //测试
-//                dataOutputStream.writeInt(maxTurns);
-//                dataOutputStream.writeInt(value[0]);
-//                dataOutputStream.writeInt(value[1]);
-//                dataOutputStream.writeInt(value[2]);
-//                dataOutputStream.writeInt(value[3]);
-//                //
-//                dataOutputStream.flush();
-//                //测试
-//                try {
-//                    sleep(5000);
-//                }catch (InterruptedException e ){
-//                    System.out.println("Error: sleep");
-//                }
-
-                //
                 while (true) {
                     //  System.out.println("sends kaishi ");
-                    if (snakeID == 1){
-                      //  msgSnake1 = String.valueOf(dataInputStream.readInt());
+                    if (snakeID == 1) {
+                        //  msgSnake1 = String.valueOf(dataInputStream.readInt());
                         msgSnake1 = dataInputStream.readUTF();
-                        System.out.println("Snake $1 sends "+msgSnake1);
-                       // snake2thread.sendMessage(Integer.parseInt(msgSnake1));
+                        System.out.println("Snake $1 sends " + msgSnake1);
+                        // snake2thread.sendMessage(Integer.parseInt(msgSnake1));
                         snake2thread.sendMessage(msgSnake1);
-                    }else {
-                      //  msgSnake2 = String.valueOf(dataInputStream.readInt());
+                    } else {
+                        //  msgSnake2 = String.valueOf(dataInputStream.readInt());
                         msgSnake2 = dataInputStream.readUTF();
-                        System.out.println("Snake $2 sends "+msgSnake2);
-                       // snake1thread.sendMessage(Integer.parseInt(msgSnake2));
+                        System.out.println("Snake $2 sends " + msgSnake2);
+                        // snake1thread.sendMessage(Integer.parseInt(msgSnake2));
                         snake1thread.sendMessage(msgSnake2);
                     }
 
                 }
             } catch (IOException e) {
-            System.out.println("Error: Thread " + snakeID+" run");
+                System.out.println("Error: Thread " + snakeID + " run");
 
             }
         }
 
-        public void sendMessage(int n){
+        public void sendMessage(int n) {
             try {
                 dataOutputStream.writeInt(n);
                 dataOutputStream.flush();
-            }catch (IOException e){
-                System.out.println("Error: sendmessage Sever");
-            }
-        }
-        public void sendMessage(String str){
-            try {
-                dataOutputStream.writeUTF(str);
-                dataOutputStream.flush();
-            }catch (IOException e){
+            } catch (IOException e) {
                 System.out.println("Error: sendmessage Sever");
             }
         }
 
+        public void sendMessage(String str) {
+            try {
+                dataOutputStream.writeUTF(str);
+                dataOutputStream.flush();
+            } catch (IOException e) {
+                System.out.println("Error: sendmessage Sever");
+            }
+        }
 
 
     }

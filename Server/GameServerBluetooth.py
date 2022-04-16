@@ -5,13 +5,13 @@ import bluetooth
 import _thread
 
 server_sock1 = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-server_sock1.bind(("", bluetooth.PORT_ANY))  # 绑定地址和端口
-port1 = server_sock1.getsockname()[1]  # 设置端口号
-server_sock1.listen(1)  # 绑定监听，最大挂起连接数为1
+server_sock1.bind(("", bluetooth.PORT_ANY))  # lier l'adresse et le port
+port1 = server_sock1.getsockname()[1]  # définir le numéro de port
+server_sock1.listen(1)  # Surveillance de liaison, le nombre maximum de connexions en attente est de 1
 server_sock2 = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-server_sock2.bind(("", bluetooth.PORT_ANY))  # 绑定地址和端口
-port2 = server_sock2.getsockname()[1]  # 设置端口号
-server_sock2.listen(1)  # 绑定监听，最大挂起连接数为1
+server_sock2.bind(("", bluetooth.PORT_ANY))  # lier l'adresse et le port
+port2 = server_sock2.getsockname()[1]  # définir le numéro de port
+server_sock2.listen(1)  # Surveillance de liaison, le nombre maximum de connexions en attente est de 1
 
 nbSnake = 0
 msgSnake1 = ""
@@ -24,7 +24,7 @@ print("=======ServerBluetooth========")
 
 
 class ServersBluetoothThread(threading.Thread):
-
+    # Initialiser le serveur
     def __init__(self, snake_sock, snakeID):
         threading.Thread.__init__(self)
         self.snakeID = snakeID
